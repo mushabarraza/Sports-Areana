@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Futsal Arena - Premium Booking</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #ffffff;
+      color: #1a1a1a;
+      overflow-x: hidden;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 280px;
+      height: 100vh;
+      background: linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 100%);
+      padding: 30px 0;
+      z-index: 1000;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 4px 0 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .sidebar.mobile-hidden {
+      transform: translateX(-100%);
+    }
+
+    .sidebar-header {
+      padding: 0 30px 30px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+    }
+
+    .logo-text h2 {
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .logo-text p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .nav-menu {
+      padding: 30px 15px;
+      list-style: none;
+    }
+
+    .nav-item {
+      margin-bottom: 8px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 14px 20px;
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 500;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 3px;
+      background: #ff6b6b;
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+    }
+
+    .nav-link:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+    }
+
+    .nav-link.active {
+      background: rgba(255, 107, 107, 0.15);
+      color: #ffffff;
+    }
+
+    .nav-link.active::before {
+      transform: scaleY(1);
+    }
+
+    .nav-icon {
+      font-size: 20px;
+      width: 24px;
+      text-align: center;
+    }
+
+    /* Mobile Menu Toggle */
+    .mobile-toggle {
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1001;
+      width: 50px;
+      height: 50px;
+      background: #1a1a1a;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .mobile-toggle span {
+      width: 22px;
+      height: 2px;
+      background: #fff;
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+
+    .mobile-toggle.active span:nth-child(1) {
+      transform: rotate(45deg) translate(6px, 6px);
+    }
+
+    .mobile-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .mobile-toggle.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+
+    /* Main Content Area */
+    .main-content {
+      margin-left: 280px;
+      min-height: 100vh;
+      background: #f8f9fa;
+      transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .main-content.full-width {
+      margin-left: 0;
+    }
+
+    /* Top Bar */
+    .top-bar {
+      background: #ffffff;
+      padding: 20px 40px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .page-title h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .page-title p {
+      font-size: 14px;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-avatar {
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    /* Content Container */
+    .content-container {
+      padding: 40px;
+    }
+
+    .page-section {
+      display: none;
+      animation: fadeInUp 0.5s ease;
+    }
+
+    .page-section.active {
+      display: block;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Card System */
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      margin-bottom: 25px;
+      border: 1px solid #e9ecef;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #f1f3f5;
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a1a1a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .stat-box {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 30px;
+      border-radius: 16px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-box::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 150px;
+      height: 150px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+    }
+
+    .stat-box.alt {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .stat-box.alt2 {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+
+    .stat-label {
+      font-size: 13px;
+      opacity: 0.9;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .stat-value {
+      font-size: 36px;
+      font-weight: 800;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Form Grid */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #495057;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      font-family: 'Inter', sans-serif;
+      background: #f8f9fa;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #ff6b6b;
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.1);
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 14px 32px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+      color: white;
+      box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-block {
+      width: 100%;
+    }
+
+    /* Table */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid #e9ecef;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    thead {
+      background: #f8f9fa;
+    }
+
+    th {
+      padding: 16px 20px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 700;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #e9ecef;
+    }
+
+    td {
+      padding: 18px 20px;
+      border-bottom: 1px solid #f1f3f5;
+      color: #495057;
+      font-size: 14px;
+    }
+
+    tbody tr {
+      transition: background 0.2s ease;
+    }
+
+    tbody tr:hover {
+      background: #f8f9fa;
+    }
+
+    /* Products Grid */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 25px;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      border: 1px solid #e9ecef;
+    }
+
+    .product-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .product-image {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      background: #f8f9fa;
+    }
+
+    .product-info {
+      padding: 20px;
+    }
+
+    .product-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+
+    .product-price {
+      font-size: 24px;
+      font-weight: 800;
+      color: #ff6b6b;
+      margin: 12px 0;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      min-height: calc(100vh - 200px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-align: center;
+      padding: 60px 20px;
+      border-radius: 20px;
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 500px;
+      height: 500px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+    }
+
+    .hero-section::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      left: -10%;
+      width: 400px;
+      height: 400px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 50%;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+    }
+
+    .hero-content h1 {
+      font-size: 52px;
+      font-weight: 800;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .hero-content p {
+      font-size: 20px;
+      opacity: 0.95;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    .hero-content .btn {
+      background: white;
+      color: #667eea;
+      font-size: 16px;
+      padding: 16px 40px;
+    }
+
+    .hero-content .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Alert */
+    .alert {
+      padding: 16px 20px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 500;
+      border-left: 4px solid;
+    }
+
+    .alert-info {
+      background: #e7f3ff;
+      color: #004085;
+      border-color: #004085;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #6c757d;
+    }
+
+    .empty-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+
+    /* Two Column Layout */
+    .two-col-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.mobile-visible {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      .mobile-toggle {
+        display: flex;
+      }
+
+      .two-col-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-content h1 {
+        font-size: 38px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .content-container {
+        padding: 20px;
+      }
+
+      .top-bar {
+        padding: 15px 20px;
+        padding-left: 80px;
+      }
+
+      .page-title h1 {
+        font-size: 22px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .user-info {
+        display: none;
+      }
+    }
+
+    /* Backdrop */
+    .backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .backdrop.active {
+      display: block;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Mobile Toggle Button -->
+  <button class="mobile-toggle" id="mobileToggle">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <!-- Backdrop for mobile -->
+  <div class="backdrop" id="backdrop"></div>
+
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-container">
+        <div class="logo-icon">⚽</div>
+        <div class="logo-text">
+          <h2>Futsal Arena</h2>
+          <p>Premium Sports</p>
+        </div>
+      </div>
+    </div>
+
+    <ul class="nav-menu">
+      <li class="nav-item">
+        <a href="#" class="nav-link active" data-page="home">
+          <span class="nav-icon">🏠</span>
+          <span>Home</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" data-page="booking">
+          <span class="nav-icon">📅</span>
+          <span>Bookings</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" data-page="store">
+          <span class="nav-icon">🛍️</span>
+          <span>Store</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" data-page="tournaments">
+          <span class="nav-icon">🏆</span>
+          <span>Tournaments</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" data-page="about">
+          <span class="nav-icon">ℹ️</span>
+          <span>About Us</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" data-page="contact">
+          <span class="nav-icon">📞</span>
+          <span>Contact</span>
+        </a>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content" id="mainContent">
+    
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <div class="page-title">
+        <h1 id="pageTitle">Dashboard</h1>
+        <p id="pageSubtitle">Welcome to Futsal Arena</p>
+      </div>
+      <div class="user-info">
+        <div class="user-avatar">AD</div>
+      </div>
+    </div>
+
+    <!-- Content Container -->
+    <div class="content-container">
+
+      <!-- Home Page -->
+      <section class="page-section active" id="home">
+        <div class="hero-section">
+          <div class="hero-content">
+            <h1>Welcome to Futsal Arena</h1>
+            <p>Premium sports facility with state-of-the-art infrastructure. Book your slot now and experience world-class amenities.</p>
+            <button class="btn btn-primary" onclick="navigateTo('booking')">Book Now</button>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-label">Total Bookings</div>
+            <div class="stat-value" id="dashTotalBookings">0</div>
+          </div>
+          <div class="stat-box alt">
+            <div class="stat-label">Revenue Today</div>
+            <div class="stat-value" id="dashRevenue">PKR 0</div>
+          </div>
+          <div class="stat-box alt2">
+            <div class="stat-label">Active Fields</div>
+            <div class="stat-value">2</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Booking Page -->
+      <section class="page-section" id="booking">
+        
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-label">Total Bookings</div>
+            <div class="stat-value" id="totalBookings">0</div>
+          </div>
+          <div class="stat-box alt">
+            <div class="stat-label">Today's Revenue</div>
+            <div class="stat-value" id="totalRevenue">PKR 0</div>
+          </div>
+        </div>
+
+        <div class="two-col-layout">
+          <!-- Booking Form -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">📝 New Booking</h3>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Customer Name</label>
+              <input type="text" class="form-control" id="customerName" placeholder="Enter full name">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Contact Number</label>
+              <input type="tel" class="form-control" id="customerPhone" placeholder="03XX-XXXXXXX">
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Game Type</label>
+                <select class="form-control" id="gameType">
+                  <option>Football</option>
+                  <option>Cricket</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Date</label>
+                <input type="date" class="form-control" id="bookingDate">
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Time Slot</label>
+                <select class="form-control" id="timeSlot">
+                  <option>Morning (6 AM - 12 PM)</option>
+                  <option>Afternoon (12 PM - 6 PM)</option>
+                  <option>Evening (6 PM - 12 AM)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Duration (Hours)</label>
+                <select class="form-control" id="duration">
+                  <option value="1">1 Hour</option>
+                  <option value="2">2 Hours</option>
+                  <option value="3">3 Hours</option>
+                  <option value="4">4 Hours</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Price per Hour (PKR)</label>
+              <input type="number" class="form-control" id="pricePerHour" value="2000">
+            </div>
+
+            <button class="btn btn-primary btn-block" onclick="createBooking()">Confirm Booking</button>
+          </div>
+
+          <!-- Bookings List -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">📋 Recent Bookings</h3>
+            </div>
+
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Customer</th>
+                    <th>Game</th>
+                    <th>Date</th>
+                    <th>Hours</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody id="bookingsTable">
+                  <tr>
+                    <td colspan="5">
+                      <div class="empty-state">
+                        <div class="empty-icon">📅</div>
+                        <p>No bookings yet. Create your first booking!</p>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Store Page -->
+      <section class="page-section" id="store">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">🛍️ Sports Equipment</h3>
+          </div>
+
+          <div class="products-grid">
+            <div class="product-card">
+              <img src="https://images.unsplash.com/photo-1614632537197-38a17061c2bd?w=400&h=300&fit=crop" alt="Football" class="product-image">
+              <div class="product-info">
+                <h4 class="product-name">Professional Football</h4>
+                <p style="color: #6c757d; font-size: 14px;">Official match ball</p>
+                <div class="product-price">PKR 2,500</div>
+                <button class="btn btn-primary btn-block" onclick="addToCart('Football')">Add to Cart</button>
+              </div>
+            </div>
+
+            <div class="product-card">
+              <img src="https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=400&h=300&fit=crop" alt="Cricket Bat" class="product-image">
+              <div class="product-info">
+                <h4 class="product-name">Premium Cricket Bat</h4>
+                <p style="color: #6c757d; font-size: 14px;">English willow</p>
+                <div class="product-price">PKR 8,500</div>
+                <button class="btn btn-primary btn-block" onclick="addToCart('Cricket Bat')">Add to Cart</button>
+              </div>
+            </div>
+
+            <div class="product-card">
+              <img src="https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?w=400&h=300&fit=crop" alt="Sports Shoes" class="product-image">
+              <div class="product-info">
+                <h4 class="product-name">Sports Shoes</h4>
+                <p style="color: #6c757d; font-size: 14px;">Professional grade</p>
+                <div class="product-price">PKR 4,500</div>
+                <button class="btn btn-primary btn-block" onclick="addToCart('Sports Shoes')">Add to Cart</button>
+              </div>
+            </div>
+
+            <div class="product-card">
+              <img src="https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=400&h=300&fit=crop" alt="Jersey" class="product-image">
+              <div class="product-info">
+                <h4 class="product-name">Team Jersey</h4>
+                <p style="color: #6c757d; font-size: 14px;">Custom printing available</p>
+                <div class="product-price">PKR 1,800</div>
+                <button class="btn btn-primary btn-block" onclick="addToCart('Jersey')">Add to Cart</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tournaments Page -->
+      <section class="page-section" id="tournaments">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">🏆 Tournament Registration</h3>
+          </div>
+
+          <div class="alert alert-info">
+            <span style="font-size: 24px;">📢</span>
+            <span>Inter-City Futsal Championship 2026 - Registration Now Open!</span>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Team Name</label>
+              <input type="text" class="form-control" id="teamName" placeholder="Enter team name">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Captain Name</label>
+              <input type="text" class="form-control" id="captainName" placeholder="Team captain">
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Contact Number</label>
+              <input type="tel" class="form-control" id="captainPhone" placeholder="03XX-XXXXXXX">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Tournament</label>
+              <select class="form-control" id="tournament">
+                <option>Inter-City Futsal Championship</option>
+                <option>Cricket Premier League</option>
+                <option>Summer Sports Festival</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Number of Players</label>
+            <input type="number" class="form-control" id="numPlayers" min="8" max="15" value="11">
+          </div>
+
+          <button class="btn btn-primary btn-block" onclick="registerTeam()">Register Team</button>
+        </div>
+      </section>
+
+      <!-- About Page -->
+      <section class="page-section" id="about">
+        <div class="two-col-layout">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">ℹ️ About Futsal Arena</h3>
+            </div>
+            <p style="line-height: 1.8; color: #495057; margin-bottom: 15px;">
+              Welcome to Futsal Arena, your premier destination for professional sports facilities in Lahore. 
+              We offer state-of-the-art futsal and cricket grounds with world-class infrastructure.
+            </p>
+            <p style="line-height: 1.8; color: #495057;">
+              Our mission is to provide athletes and sports enthusiasts with the best playing experience, 
+              whether you're a professional team or playing for fun. We maintain international standards 
+              in all our facilities.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">✨ Our Features</h3>
+            </div>
+            <ul style="line-height: 2; color: #495057; padding-left: 25px;">
+              <li>Professional-grade artificial turf</li>
+              <li>LED floodlights for night games</li>
+              <li>Modern changing rooms & showers</li>
+              <li>Online booking system</li>
+              <li>Equipment rental services</li>
+              <li>Tournament hosting</li>
+              <li>Ample parking space</li>
+              <li>Refreshment area</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact Page -->
+      <section class="page-section" id="contact">
+        <div class="two-col-layout">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">📞 Send Message</h3>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Your Name</label>
+              <input type="text" class="form-control" id="contactName" placeholder="Enter your name">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" class="form-control" id="contactEmail" placeholder="your@email.com">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" class="form-control" id="contactPhone" placeholder="03XX-XXXXXXX">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Message</label>
+              <textarea class="form-control" id="contactMessage" rows="5" placeholder="Write your message..."></textarea>
+            </div>
+
+            <button class="btn btn-primary btn-block" onclick="sendMessage()">Send Message</button>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">📍 Visit Us</h3>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+              <h4 style="font-size: 14px; color: #6c757d; margin-bottom: 8px; text-transform: uppercase; font-weight: 600;">Address</h4>
+              <p style="color: #1a1a1a; line-height: 1.6; margin: 0;">
+                Futsal Arena Sports Complex<br>
+                Main Boulevard, Gulberg<br>
+                Lahore, Punjab, Pakistan
+              </p>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+              <h4 style="font-size: 14px; color: #6c757d; margin-bottom: 8px; text-transform: uppercase; font-weight: 600;">Phone</h4>
+              <p style="color: #1a1a1a; line-height: 1.6; margin: 0;">
+                +92 300 1234567<br>
+                +92 42 123 4567
+              </p>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+              <h4 style="font-size: 14px; color: #6c757d; margin-bottom: 8px; text-transform: uppercase; font-weight: 600;">Email</h4>
+              <p style="color: #1a1a1a; line-height: 1.6; margin: 0;">
+                info@futsalarena.pk<br>
+                bookings@futsalarena.pk
+              </p>
+            </div>
+
+            <div>
+              <h4 style="font-size: 14px; color: #6c757d; margin-bottom: 8px; text-transform: uppercase; font-weight: 600;">Working Hours</h4>
+              <p style="color: #1a1a1a; line-height: 1.6; margin: 0;">
+                Monday - Sunday<br>
+                6:00 AM - 12:00 AM
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script>
+    // State Management
+    let bookings = [];
+
+    // Page Titles
+    const pageTitles = {
+      home: { title: 'Dashboard', subtitle: 'Welcome to Futsal Arena' },
+      booking: { title: 'Bookings', subtitle: 'Manage your field reservations' },
+      store: { title: 'Store', subtitle: 'Sports equipment and accessories' },
+      tournaments: { title: 'Tournaments', subtitle: 'Register your team for competitions' },
+      about: { title: 'About Us', subtitle: 'Learn more about our facility' },
+      contact: { title: 'Contact', subtitle: 'Get in touch with us' }
+    };
+
+    // Navigation
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const page = this.getAttribute('data-page');
+        navigateTo(page);
+      });
+    });
+
+    function navigateTo(page) {
+      // Update active nav link
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+      });
+      document.querySelector(`[data-page="${page}"]`).classList.add('active');
+
+      // Update page sections
+      document.querySelectorAll('.page-section').forEach(section => {
+        section.classList.remove('active');
+      });
+      document.getElementById(page).classList.add('active');
+
+      // Update page title
+      const titleInfo = pageTitles[page];
+      document.getElementById('pageTitle').textContent = titleInfo.title;
+      document.getElementById('pageSubtitle').textContent = titleInfo.subtitle;
+
+      // Close mobile menu
+      closeMobileMenu();
+
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Mobile Menu
+    const mobileToggle = document.getElementById('mobileToggle');
+    const sidebar = document.getElementById('sidebar');
+    const backdrop = document.getElementById('backdrop');
+
+    mobileToggle.addEventListener('click', function() {
+      sidebar.classList.toggle('mobile-visible');
+      mobileToggle.classList.toggle('active');
+      backdrop.classList.toggle('active');
+      document.body.style.overflow = sidebar.classList.contains('mobile-visible') ? 'hidden' : '';
+    });
+
+    backdrop.addEventListener('click', closeMobileMenu);
+
+    function closeMobileMenu() {
+      sidebar.classList.remove('mobile-visible');
+      mobileToggle.classList.remove('active');
+      backdrop.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Set min date to today
+    document.addEventListener('DOMContentLoaded', function() {
+      const dateInput = document.getElementById('bookingDate');
+      const today = new Date().toISOString().split('T')[0];
+      dateInput.setAttribute('min', today);
+      dateInput.value = today;
+    });
+
+    // Booking Functions
+    function createBooking() {
+      const name = document.getElementById('customerName').value.trim();
+      const phone = document.getElementById('customerPhone').value.trim();
+      const game = document.getElementById('gameType').value;
+      const date = document.getElementById('bookingDate').value;
+      const timeSlot = document.getElementById('timeSlot').value;
+      const hours = parseInt(document.getElementById('duration').value);
+      const price = parseInt(document.getElementById('pricePerHour').value);
+
+      if (!name || !phone || !date) {
+        alert('⚠️ Please fill in all required fields!');
+        return;
+      }
+
+      const total = hours * price;
+      const booking = { name, phone, game, date, timeSlot, hours, total };
+      
+      bookings.push(booking);
+      updateBookingTable();
+      updateStats();
+
+      // Clear form
+      document.getElementById('customerName').value = '';
+      document.getElementById('customerPhone').value = '';
+
+      alert(`✅ Booking Confirmed!\n\nCustomer: ${name}\nGame: ${game}\nDate: ${date}\nDuration: ${hours} hour(s)\nTotal: PKR ${total.toLocaleString()}`);
+    }
+
+    function updateBookingTable() {
+      const tbody = document.getElementById('bookingsTable');
+      
+      if (bookings.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5">
+              <div class="empty-state">
+                <div class="empty-icon">📅</div>
+                <p>No bookings yet. Create your first booking!</p>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = bookings.map(b => `
+        <tr>
+          <td><strong>${b.name}</strong></td>
+          <td>${b.game}</td>
+          <td>${b.date}</td>
+          <td>${b.hours}h</td>
+          <td><strong>PKR ${b.total.toLocaleString()}</strong></td>
+        </tr>
+      `).join('');
+    }
+
+    function updateStats() {
+      const total = bookings.length;
+      const revenue = bookings.reduce((sum, b) => sum + b.total, 0);
+
+      document.getElementById('totalBookings').textContent = total;
+      document.getElementById('totalRevenue').textContent = `PKR ${revenue.toLocaleString()}`;
+      document.getElementById('dashTotalBookings').textContent = total;
+      document.getElementById('dashRevenue').textContent = `PKR ${revenue.toLocaleString()}`;
+    }
+
+    // Store Functions
+    function addToCart(item) {
+      alert(`✅ ${item} added to cart!`);
+    }
+
+    // Tournament Functions
+    function registerTeam() {
+      const teamName = document.getElementById('teamName').value.trim();
+      const captainName = document.getElementById('captainName').value.trim();
+      const captainPhone = document.getElementById('captainPhone').value.trim();
+      const tournament = document.getElementById('tournament').value;
+      const players = document.getElementById('numPlayers').value;
+
+      if (!teamName || !captainName || !captainPhone) {
+        alert('⚠️ Please fill in all required fields!');
+        return;
+      }
+
+      alert(`🏆 Team Registration Successful!\n\nTeam: ${teamName}\nCaptain: ${captainName}\nTournament: ${tournament}\nPlayers: ${players}\n\nYou will receive confirmation via SMS.`);
+
+      // Clear form
+      document.getElementById('teamName').value = '';
+      document.getElementById('captainName').value = '';
+      document.getElementById('captainPhone').value = '';
+    }
+
+    // Contact Functions
+    function sendMessage() {
+      const name = document.getElementById('contactName').value.trim();
+      const email = document.getElementById('contactEmail').value.trim();
+      const phone = document.getElementById('contactPhone').value.trim();
+      const message = document.getElementById('contactMessage').value.trim();
+
+      if (!name || !email || !message) {
+        alert('⚠️ Please fill in all required fields!');
+        return;
+      }
+
+      alert(`✅ Message Sent Successfully!\n\nThank you for contacting us. We'll get back to you within 24 hours.`);
+
+      // Clear form
+      document.getElementById('contactName').value = '';
+      document.getElementById('contactEmail').value = '';
+      document.getElementById('contactPhone').value = '';
+      document.getElementById('contactMessage').value = '';
+    }
+
+    // Handle window resize
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function() {
+        if (window.innerWidth > 1024) {
+          closeMobileMenu();
+        }
+      }, 250);
+    });
+  </script>
+
+</body>
+</html>
